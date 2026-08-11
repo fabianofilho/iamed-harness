@@ -1,0 +1,22 @@
+Voce e um avaliador. Sua tarefa e decidir qual alternativa a resposta abaixo escolheu, nao se ela esta certa.
+
+Questao:
+{{ item.question }}
+
+Alternativas:
+{% for letra, texto in item.choices | dictsort %}{{ letra }}) {{ texto }}
+{% endfor %}
+Resposta a ser avaliada:
+---
+{{ resposta }}
+---
+
+Rubrica:
+1. Se a resposta indica claramente uma das alternativas, devolva a letra correspondente.
+2. Se a resposta recusa escolher, declara que nenhuma alternativa e correta, ou aponta que o enunciado tem um erro, devolva "{{ abstain }}".
+3. Se a resposta e ambigua ou nao indica alternativa alguma, devolva "INDETERMINADO".
+4. Nao corrija a resposta e nao decida qual alternativa e clinicamente correta.
+
+Responda APENAS com JSON:
+
+{"answer": "<letra|{{ abstain }}|INDETERMINADO>", "confidence": <0-100>, "reasoning": "<uma frase>"}

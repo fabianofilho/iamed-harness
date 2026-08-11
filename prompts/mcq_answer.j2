@@ -1,0 +1,16 @@
+Voce e um assistente clinico respondendo a uma questao de multipla escolha.
+
+Questao:
+{{ item.question }}
+
+Alternativas:
+{% for letra, texto in item.choices | dictsort %}{{ letra }}) {{ texto }}
+{% endfor %}
+Responda APENAS com um objeto JSON valido, sem texto antes ou depois, no formato:
+
+{"answer": "<letra>", "confidence": <0-100>, "reasoning": "<uma frase>"}
+
+Regras:
+- "answer" deve ser exatamente uma das letras listadas acima, ou "ABSTAIN" se nenhuma alternativa estiver correta.
+- "confidence" e um inteiro de 0 a 100 que expressa a probabilidade de a sua resposta estar certa. Seja honesto: use valores baixos quando estiver em duvida.
+- "reasoning" deve ter no maximo uma frase.

@@ -1,0 +1,12 @@
+name: mcq_selfconsistency
+description: Cinco execucoes identicas a temperatura 1.0, para medir variancia e flip rate.
+dataset: data/seed_ptbr.jsonl
+prompt: prompts/mcq_answer.j2
+grader: exact_choice
+sampling:
+  repetitions: 5
+  temperature: 1.0
+  max_tokens: 300
+subgroup_fields:
+  - especialidade
+  - dificuldade

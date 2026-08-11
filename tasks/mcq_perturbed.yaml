@@ -1,0 +1,13 @@
+name: mcq_perturbed
+description: Mesmo conteudo clinico do baseline, com as alternativas embaralhadas.
+dataset: data/seed_ptbr.shuffled.jsonl
+prompt: prompts/mcq_answer.j2
+grader: exact_choice
+sampling:
+  repetitions: 1
+  temperature: 0.0
+  max_tokens: 300
+subgroup_fields:
+  - especialidade
+  - dificuldade
+  - perturbation

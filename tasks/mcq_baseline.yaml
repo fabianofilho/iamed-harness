@@ -1,0 +1,12 @@
+name: mcq_baseline
+description: Linha de base. Uma passada, temperatura zero, dataset autoral em pt-BR.
+dataset: data/seed_ptbr.jsonl
+prompt: prompts/mcq_answer.j2
+grader: exact_choice
+sampling:
+  repetitions: 1
+  temperature: 0.0
+  max_tokens: 300
+subgroup_fields:
+  - especialidade
+  - dificuldade
