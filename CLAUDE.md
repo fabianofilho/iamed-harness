@@ -68,7 +68,7 @@ segundos e falhar de forma legível.
 - Python 3.11+, uv (lockfile commitado)
 - Typer + Rich (CLI), Pydantic v2 (contratos), Jinja2 (prompts e relatório)
 - numpy + pandas, matplotlib. Sem scikit-learn: as métricas de calibração são à mão
-- Anthropic SDK atrás da interface `Provider` (anthropic, fixture, echo)
+- Anthropic SDK e httpx atrás da interface `Provider` (anthropic, openai, fixture, echo)
 - pytest, ruff, mypy
 
 ## Comandos úteis

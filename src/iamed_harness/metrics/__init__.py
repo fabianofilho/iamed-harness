@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections import Counter
 
 from ..schemas import Item, Prediction, RunConfig, RunResult
-from .accuracy import bootstrap_ci, compute_accuracy
+from .accuracy import compute_accuracy, wilson_ci
 from .calibration import (
     brier_score,
     compute_calibration,
@@ -35,7 +35,7 @@ def summarize(
     erros = Counter(_classificar_erro(p.error) for p in predictions if p.error)
     return RunResult(
         config=config,
-        accuracy=compute_accuracy(predictions, seed=config.seed),
+        accuracy=compute_accuracy(predictions),
         calibration=compute_calibration(
             [p.confidence for p in predictions], [p.correct for p in predictions]
         ),
@@ -47,7 +47,6 @@ def summarize(
 
 
 __all__ = [
-    "bootstrap_ci",
     "brier_score",
     "compute_accuracy",
     "compute_calibration",
@@ -57,4 +56,5 @@ __all__ = [
     "maximum_calibration_error",
     "resposta_modal",
     "summarize",
+    "wilson_ci",
 ]

@@ -132,7 +132,7 @@ def cmd_tasks() -> None:
 def cmd_run(
     task: Annotated[str, typer.Argument(help="nome da tarefa (ver: harness tasks)")],
     provider: Annotated[
-        str, typer.Option("--provider", help="anthropic, fixture ou echo")
+        str, typer.Option("--provider", help="anthropic, openai, fixture ou echo")
     ] = os.environ.get("HARNESS_PROVIDER", "fixture"),
     model: Annotated[str, typer.Option("--model")] = os.environ.get(
         "HARNESS_MODEL", "claude-sonnet-5"
