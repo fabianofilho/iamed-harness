@@ -60,7 +60,7 @@ mais legivel no relatorio.
 
 | Metrica | Onde | O que revela |
 |---|---|---|
-| Acuracia com IC 95% | `metrics/accuracy.py` | O intervalo costuma ser mais largo do que a diferenca entre dois modelos |
+| Acuracia com IC 95% (Wilson) | `metrics/accuracy.py` | O intervalo costuma ser mais largo do que a diferenca entre dois modelos |
 | ECE, MCE, Brier | `metrics/calibration.py` | Confianca declarada alta demais para a acuracia observada |
 | Flip rate, concordancia | `metrics/variance.py` | Quanto a resposta muda entre execucoes identicas |
 | Quebra por subgrupo | `metrics/subgroup.py` | Media global escondendo especialidade ou dificuldade ruim |

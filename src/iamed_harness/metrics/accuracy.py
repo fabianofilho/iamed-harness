@@ -1,4 +1,4 @@
-"""Acuracia com intervalo de confianca por bootstrap.
+"""Acuracia com intervalo de confianca de Wilson.
 
 Duas acuracias sao reportadas de proposito:
 
@@ -7,40 +7,51 @@ Duas acuracias sao reportadas de proposito:
 
 A segunda existe unicamente para mostrar o tamanho da mentira. Se ela for bem
 maior que a primeira, o modelo esta ganhando pontos por sumir do denominador.
+
+Por que Wilson e nao bootstrap: com n pequeno e acuracia no extremo, o
+bootstrap percentil colapsa. Com 25/25 toda reamostragem da 1.0 e o intervalo
+vira "100% a 100%", certeza que 25 questoes nao sustentam. Wilson da 86.7% a
+100% no mesmo caso, e ainda e fechado e deterministico, sem seed.
+
+Limite conhecido: o intervalo trata cada predicao como independente. Em tarefa
+com repeticoes, K execucoes do mesmo item nao sao K observacoes novas, entao o
+intervalo sai mais estreito do que deveria.
 """
 
 from __future__ import annotations
 
+import math
 from collections.abc import Sequence
-
-import numpy as np
 
 from ..schemas import AccuracyMetrics, Prediction
 
+Z_95 = 1.959963984540054
 
-def bootstrap_ci(
-    acertos: Sequence[bool], *, n_amostras: int = 2000, seed: int = 20260811, alpha: float = 0.05
-) -> tuple[float, float]:
-    """IC percentil por reamostragem com reposicao. Seed fixa, resultado reproduzivel."""
-    if not acertos:
+
+def wilson_ci(n_acertos: int, n_total: int, *, z: float = Z_95) -> tuple[float, float]:
+    """IC de Wilson (score) para uma proporcao binomial."""
+    if n_total <= 0:
         return (0.0, 0.0)
-    rng = np.random.default_rng(seed)
-    dados = np.array([1.0 if a else 0.0 for a in acertos])
-    indices = rng.integers(0, len(dados), size=(n_amostras, len(dados)))
-    medias = dados[indices].mean(axis=1)
-    low = float(np.quantile(medias, alpha / 2))
-    high = float(np.quantile(medias, 1 - alpha / 2))
+    if not 0 <= n_acertos <= n_total:
+        raise ValueError(f"n_acertos={n_acertos} fora de 0..{n_total}")
+    p = n_acertos / n_total
+    z2 = z * z
+    denominador = 1 + z2 / n_total
+    centro = (p + z2 / (2 * n_total)) / denominador
+    meia = z * math.sqrt(p * (1 - p) / n_total + z2 / (4 * n_total * n_total)) / denominador
+    # Nos extremos o limite e exato (0 ou 1); a conta em float deixaria 1e-17.
+    low = 0.0 if n_acertos == 0 else max(0.0, centro - meia)
+    high = 1.0 if n_acertos == n_total else min(1.0, centro + meia)
     return (low, high)
 
 
-def compute_accuracy(predictions: Sequence[Prediction], *, seed: int = 20260811) -> AccuracyMetrics:
+def compute_accuracy(predictions: Sequence[Prediction]) -> AccuracyMetrics:
     n_total = len(predictions)
     falhas = [p for p in predictions if p.failed]
     parseadas = [p for p in predictions if not p.failed]
     n_correct = sum(1 for p in parseadas if p.correct)
 
-    acertos_honestos = [bool(p.correct) for p in predictions]
-    low, high = bootstrap_ci(acertos_honestos, seed=seed)
+    low, high = wilson_ci(n_correct, n_total)
 
     return AccuracyMetrics(
         n_total=n_total,
