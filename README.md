@@ -44,6 +44,18 @@ o provider:
 uv run harness run mcq_baseline --provider anthropic --model claude-sonnet-5
 ```
 
+Para um modelo local ou qualquer endpoint compativel com a API de chat da OpenAI
+(llama.cpp, vLLM, Ollama em `/v1`), use o provider `openai` e aponte `OPENAI_BASE_URL`.
+A chave e opcional; servidor local costuma ignorar:
+
+```bash
+OPENAI_BASE_URL=http://127.0.0.1:8080/v1 uv run harness run mcq_baseline --provider openai --model local-model
+```
+
+Servidor local com um slot so enfileira as chamadas concorrentes. O timeout padrao e
+de 300 s por chamada (`HARNESS_TIMEOUT_S`); `--concurrency 1` deixa a latencia por item
+mais legivel no relatorio.
+
 ## O que o harness mede
 
 | Metrica | Onde | O que revela |
@@ -110,7 +122,7 @@ src/iamed_harness/
   registry.py       tarefas em tasks/*.yaml, nunca em codigo
   runner.py         execucao assincrona, cache, retry com backoff, run_id
   cache.py          cache em disco por hash de provider, modelo, prompt, temp, seed, repeticao
-  providers/        anthropic, fixture (offline), echo (deterministico)
+  providers/        anthropic, openai (endpoint compativel), fixture (offline), echo
   graders/          exact_choice, regex, llm_judge
   metrics/          accuracy, calibration, variance, subgroup
   perturbations.py  cinco perturbacoes, cada uma com teste de gabarito
