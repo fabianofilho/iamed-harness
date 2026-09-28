@@ -1,7 +1,8 @@
 """Interface de provedor e fabrica.
 
-Tres implementacoes: `anthropic` (rede), `fixture` (respostas gravadas, zero
-rede) e `echo` (deterministico, para teste). A sessao ao vivo roda em
+Quatro implementacoes: `anthropic` (rede), `openai` (qualquer endpoint
+compativel, inclusive modelo local), `fixture` (respostas gravadas, zero rede) e
+`echo` (deterministico, para teste). A sessao ao vivo roda em
 `fixture`, entao nada no caminho critico pode depender de credencial.
 """
 
@@ -51,7 +52,11 @@ def get_provider(name: str, **kwargs: object) -> Provider:
         return FixtureProvider(str(caminho) if caminho is not None else "fixtures")
     if name == "echo":
         return EchoProvider()
-    raise ProviderError(f"provider desconhecido: {name!r}. Use anthropic, fixture ou echo.")
+    if name == "openai":
+        from .openai_compat import OpenAICompatProvider
+
+        return OpenAICompatProvider()
+    raise ProviderError(f"provider desconhecido: {name!r}. Use anthropic, openai, fixture ou echo.")
 
 
 __all__ = ["Provider", "ProviderError", "get_provider"]
