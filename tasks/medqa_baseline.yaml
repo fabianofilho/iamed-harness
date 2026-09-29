@@ -1,0 +1,11 @@
+name: medqa_baseline
+description: MedQA (USMLE, 4 alternativas), split de teste. Baixar antes com scripts/fetch_datasets.py.
+dataset: data/external/medqa_test.jsonl
+prompt: prompts/mcq_answer.j2
+grader: exact_choice
+sampling:
+  repetitions: 1
+  temperature: 0.0
+  max_tokens: 300
+subgroup_fields:
+  - fonte
