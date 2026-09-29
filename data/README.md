@@ -63,22 +63,14 @@ uv run python scripts/fetch_datasets.py --dataset medqa --split test --limit 200
 uv run python scripts/fetch_datasets.py --dataset pubmedqa --subset pqa_labeled --split train --limit 200
 ```
 
-O script converte para o schema `Item` acima. Depois, aponte uma tarefa nova em `tasks/`
-para o arquivo baixado:
+O script converte para o schema `Item` acima. A tarefa `tasks/medqa_baseline.yaml` ja
+aponta para `data/external/medqa_test.jsonl`; com `--limit 5000` o split de teste vem
+inteiro (1273 itens). Para PubMedQA, crie uma tarefa no mesmo molde apontando para o
+arquivo baixado.
 
-```yaml
-name: medqa_baseline
-description: MedQA, 200 itens do split de teste.
-dataset: data/external/medqa_test.jsonl
-prompt: prompts/mcq_answer.j2
-grader: exact_choice
-sampling:
-  repetitions: 1
-  temperature: 0.0
-  max_tokens: 300
-subgroup_fields:
-  - fonte
-```
+As questoes do MedQA estao em ingles e o prompt padrao em portugues. Leve isso em conta ao
+comparar com o seed pt-BR, e lembre que um benchmark publico desse porte provavelmente
+esteve no treino do modelo avaliado.
 
-Datasets externos nao tem fixture gravado. Rode com `--provider anthropic`, ou grave os
+Datasets externos nao tem fixture gravado. Rode com `--provider anthropic` ou `openai`, ou grave os
 seus com `scripts/record_fixtures.py`.
